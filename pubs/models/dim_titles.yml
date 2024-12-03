@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: dim_titles
+    description: Title Dimension. One row per book title
+    columns:
+      - name: title_key
+        data_type: int 
+        description: The business / source key of the title  
+        tests:
+        - not_null
+        - unique
+      - name: title_id
+        description: Primary Key of the source system
+        tests:
+          - not_null
+          - unique
+      - name: title
+        description: Book Title
+      - name: type
+        description: Book Category
+      - name: pub_id
+        description: FK to dim_publisher
+        tests:
+          - not_null
+      - name: price
+        description: book price
+      - name: royalties
+        description: Royalty Percentage
+      - name: ytd_sales
+        description: YTD sales for that book title
+      - name: title_au_id
+        description: FK to dim_author
+        tests:
+          - not_null
