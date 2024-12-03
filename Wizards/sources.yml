@@ -1,0 +1,79 @@
+version: 2
+
+sources:
+  - name: conformed
+    database: raw
+    schema: conformed
+
+    tables:
+      - name: DateDimension
+        columns:
+          - name: DateKey
+            tests:
+              - unique
+
+  - name: pubs
+    database: raw
+    schema: pubs
+
+    tables:
+      - name: Discounts
+        columns:
+          - name: stor_id
+            tests:
+              - unique
+      - name: Stores
+        columns:
+          - name: stor_id
+            tests:
+              - unique   
+      - name: Sales
+        tests:
+            - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - store_id
+                - title_id
+      - name: Authors
+        columns:
+          - name: au_id
+            tests:
+              - unique
+      - name: TitleAuthor
+        tests:
+              - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
+                - au_id
+                - title_id  
+      - name: Titles
+        tests:
+              - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
+              - title_id
+              - pub_id      
+      - name: RoySched
+        columns:
+          - name: title_id
+            tests:
+              - unique            
+      - name: Pub_Info
+        columns:
+          - name: pub_id
+            tests:
+              - unique  
+      - name: Publishers
+        columns:
+          - name: pub_id
+            tests:
+              - unique 
+      - name: Employee
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - emp_id
+              - job_id
+              - pub_id 
+      - name: Jobs
+        columns:
+          - name: job_id
+            tests:
+              - unique 
