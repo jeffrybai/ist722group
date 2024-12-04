@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: dim_stores
+    description: Store Dimension. One row per store
+    columns:
+      - name: stores_key
+        data_type: int 
+        description: The business / source key of the store  
+        tests:
+          - not_null
+          - unique
+      - name: stores_stor_id
+        description: Primary Key of the source system
+        tests:
+          - not_null
+          - unique
+      - name: stores_stor_name
+        description: Store Name
+      - name: stores_stor_address
+        description: Store Address
+      - name: stores_city
+        description: Store City
+      - name: stores_state
+        description: Store State
+      - name: stores_zip
+        description: Store Zip Code
+
