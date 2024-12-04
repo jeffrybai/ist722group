@@ -28,14 +28,11 @@ sources:
             tests:
               - unique   
       - name: Sales
-        columns:
-<<<<<<< HEAD
-           - stor_id
-           - title_id
-=======
-          - name: stor_id
-          - name: title_id
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
+        tests:
+            - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - store_id
+                - title_id
       - name: Authors
         columns:
           - name: au_id
@@ -43,15 +40,14 @@ sources:
               - unique
       - name: TitleAuthor
         tests:
-<<<<<<< HEAD
-          - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - au_id
-              - title_id  
+              - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
+                - au_id
+                - title_id  
       - name: Titles
         tests:
-          - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
+              - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
               - title_id
               - pub_id      
       - name: RoySched
@@ -59,21 +55,6 @@ sources:
           - name: title_id
             tests:
               - unique            
-=======
-            - dbt_utils.unique_combination_of_columns:
-                combination_of_columns:
-                - au_id
-                - title_id  
-      - name: Titles
-        tests:
-            - dbt_utils.unique_combination_of_columns:
-                combination_of_columns:
-                - title_id
-                - pub_id      
-      - name: RoySched
-        columns:
-          - name: title_id            
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
       - name: Pub_Info
         columns:
           - name: pub_id
@@ -85,28 +66,14 @@ sources:
             tests:
               - unique 
       - name: Employee
-<<<<<<< HEAD
         tests:
           - dbt_utils.unique_combination_of_columns:
             combination_of_columns:
               - emp_id
               - job_id
               - pub_id 
-=======
-        columns: 
-          - name: emp_id
-            tests:
-              - unique
-          - name: job_id
-          - name: pub_id 
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
       - name: Jobs
         columns:
           - name: job_id
             tests:
-<<<<<<< HEAD
               - unique 
-=======
-              - unique 
-
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
