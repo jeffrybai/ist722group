@@ -17,96 +17,71 @@ sources:
     schema: pubs
 
     tables:
-      - name: Discounts
-        columns:
-          - name: stor_id
-            tests:
-              - unique
-      - name: Stores
-        columns:
-          - name: stor_id
-            tests:
-              - unique   
-      - name: Sales
-        columns:
-<<<<<<< HEAD
-           - stor_id
-           - title_id
-=======
-          - name: stor_id
-          - name: title_id
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
       - name: Authors
         columns:
           - name: au_id
             tests:
               - unique
-      - name: TitleAuthor
-        tests:
-<<<<<<< HEAD
-          - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - au_id
-              - title_id  
-      - name: Titles
-        tests:
-          - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - title_id
-              - pub_id      
-      - name: RoySched
-        columns:
-          - name: title_id
-            tests:
-              - unique            
-=======
-            - dbt_utils.unique_combination_of_columns:
-                combination_of_columns:
-                - au_id
-                - title_id  
-      - name: Titles
-        tests:
-            - dbt_utils.unique_combination_of_columns:
-                combination_of_columns:
-                - title_id
-                - pub_id      
-      - name: RoySched
-        columns:
-          - name: title_id            
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
-      - name: Pub_Info
-        columns:
-          - name: pub_id
-            tests:
-              - unique  
-      - name: Publishers
-        columns:
-          - name: pub_id
-            tests:
-              - unique 
+              - not_null
+
       - name: Employee
-<<<<<<< HEAD
-        tests:
-          - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - emp_id
-              - job_id
-              - pub_id 
-=======
         columns: 
           - name: emp_id
             tests:
               - unique
           - name: job_id
+            tests:
+              - not_null
           - name: pub_id 
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
+            tests:
+              - not_null
+
       - name: Jobs
         columns:
           - name: job_id
             tests:
-<<<<<<< HEAD
               - unique 
-=======
-              - unique 
+              - not_null
 
->>>>>>> fab3a590846807ec2dd49d349efb16dcb5ce2a76
+      - name: Publishers
+        columns:
+          - name: pub_id
+            tests:
+              - unique 
+              - not_null
+
+      - name: Pub_Info
+        columns:
+          - name: pub_id
+            tests:
+              - not_null
+
+      - name: Sales
+        columns:
+          - name: stor_id
+            tests:
+              - not_null
+          - name: title_id
+            tests:
+              - not_null
+      
+      - name: Stores
+        columns:
+          - name: stor_id
+            tests:
+              - unique   
+
+      - name: TitleAuthor
+        columns:
+          - name: au_id
+            tests:
+              - not_null
+          - name: title_id
+            tests:
+              - not_null
+
+      - name: Titles
+        columns:
+          - name: title_id
+            tests:
+              - unique
