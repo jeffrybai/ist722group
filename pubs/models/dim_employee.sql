@@ -16,6 +16,10 @@ select
     e.FNAME as employee_firstname,
     e.MINIT as employee_middle_initial,
     e.LNAME as employee_lastname,
+    case 
+        when e.minit is null or e.minit = '' then concat(e.fname, ' ', e.lname)
+        else concat(e.fname, ' ', e.minit, ' ', e.lname)
+    end as employee_fullname,
     e.HIRE_DATE,
     j.JOB_DESC,
     p.pub_name as employee_company
