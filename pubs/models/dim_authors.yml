@@ -9,7 +9,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: authors_AU_ID
+      - name: Author_ID
         description: Primary key of the source system (business key).
         tests:
           - not_null
