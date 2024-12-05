@@ -1,21 +1,22 @@
-version: 2
 
+version: 2
+ 
 sources:
   - name: conformed
     database: raw
     schema: conformed
-
+ 
     tables:
       - name: DateDimension
         columns:
           - name: DateKey
             tests:
               - unique
-
+ 
   - name: pubs
     database: raw
     schema: pubs
-
+ 
     tables:
       - name: Discounts
         columns:
@@ -26,7 +27,7 @@ sources:
         columns:
           - name: stor_id
             tests:
-              - unique   
+              - unique  
       - name: Sales
         columns:
           - name: stor_id
@@ -60,20 +61,16 @@ sources:
         columns:
           - name: pub_id
             tests:
-              - unique 
+              - unique
       - name: Employee
-        columns: 
+        columns:
           - name: emp_id
             tests:
               - unique
           - name: job_id
-          - name: pub_id 
+          - name: pub_id
       - name: Jobs
         columns:
           - name: job_id
             tests:
-              - unique 
-<<<<<<< HEAD
-=======
-
->>>>>>> ba259dc4c2e85063c25e2dbbb0f87e29660aacc5
+              - unique
