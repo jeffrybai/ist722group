@@ -1,45 +1,96 @@
-version: 2
 
+version: 2
+ 
 sources:
   - name: conformed
     database: raw
     schema: conformed
-
+ 
     tables:
       - name: DateDimension
         columns:
           - name: DateKey
             tests:
               - unique
-
+ 
   - name: pubs
     database: raw
     schema: pubs
-
+ 
     tables:
+<<<<<<< HEAD
+=======
+      - name: Discounts
+        columns:
+          - name: stor_id
+            tests:
+              - unique
+      - name: Stores
+        columns:
+          - name: stor_id
+            tests:
+              - unique  
+      - name: Sales
+        columns:
+          - name: stor_id
+          - name: title_id
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Authors
         columns:
           - name: au_id
             tests:
               - unique
+<<<<<<< HEAD
               - not_null
 
+=======
+      - name: TitleAuthor
+        tests:
+            - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
+                - au_id
+                - title_id  
+      - name: Titles
+        tests:
+            - dbt_utils.unique_combination_of_columns:
+                combination_of_columns:
+                - title_id
+                - pub_id      
+      - name: RoySched
+        columns:
+          - name: title_id            
+      - name: Pub_Info
+        columns:
+          - name: pub_id
+            tests:
+              - unique  
+      - name: Publishers
+        columns:
+          - name: pub_id
+            tests:
+              - unique
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Employee
-        columns: 
+        columns:
           - name: emp_id
             tests:
               - unique
           - name: job_id
+<<<<<<< HEAD
             tests:
               - not_null
           - name: pub_id 
             tests:
               - not_null
 
+=======
+          - name: pub_id
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Jobs
         columns:
           - name: job_id
             tests:
+<<<<<<< HEAD
               - unique 
               - not_null
 
@@ -84,4 +135,6 @@ sources:
         columns:
           - name: title_id
             tests:
+=======
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
               - unique
