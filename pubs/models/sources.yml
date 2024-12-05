@@ -18,6 +18,8 @@ sources:
     schema: pubs
  
     tables:
+<<<<<<< HEAD
+=======
       - name: Discounts
         columns:
           - name: stor_id
@@ -32,11 +34,16 @@ sources:
         columns:
           - name: stor_id
           - name: title_id
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Authors
         columns:
           - name: au_id
             tests:
               - unique
+<<<<<<< HEAD
+              - not_null
+
+=======
       - name: TitleAuthor
         tests:
             - dbt_utils.unique_combination_of_columns:
@@ -62,15 +69,72 @@ sources:
           - name: pub_id
             tests:
               - unique
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Employee
         columns:
           - name: emp_id
             tests:
               - unique
           - name: job_id
+<<<<<<< HEAD
+            tests:
+              - not_null
+          - name: pub_id 
+            tests:
+              - not_null
+
+=======
           - name: pub_id
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
       - name: Jobs
         columns:
           - name: job_id
             tests:
+<<<<<<< HEAD
+              - unique 
+              - not_null
+
+      - name: Publishers
+        columns:
+          - name: pub_id
+            tests:
+              - unique 
+              - not_null
+
+      - name: Pub_Info
+        columns:
+          - name: pub_id
+            tests:
+              - not_null
+
+      - name: Sales
+        columns:
+          - name: stor_id
+            tests:
+              - not_null
+          - name: title_id
+            tests:
+              - not_null
+      
+      - name: Stores
+        columns:
+          - name: stor_id
+            tests:
+              - unique   
+
+      - name: TitleAuthor
+        columns:
+          - name: au_id
+            tests:
+              - not_null
+          - name: title_id
+            tests:
+              - not_null
+
+      - name: Titles
+        columns:
+          - name: title_id
+            tests:
+=======
+>>>>>>> 4436c251f84ef167714325dfaf251f2b5c4db222
               - unique
