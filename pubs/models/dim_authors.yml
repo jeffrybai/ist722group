@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: dim_authors
+    description: Authors Dimension. One row per author.
+    columns:
+      - name: authors_key
+        description: Primary surrogate key for the dimension.
+        tests:
+          - not_null
+          - unique
+      - name: Author_ID
+        description: Primary key of the source system (business key).
+        tests:
+          - not_null
+          - unique
+
+   
+
+

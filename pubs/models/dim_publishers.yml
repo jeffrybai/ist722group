@@ -5,22 +5,15 @@ models:
     description: Publishers Dimension. One row per Publisher
     columns:
       - name: publishers_key
-        data_type: int 
         description: The business / source key of the publisher
         tests:
           - not_null
           - unique
-      - name: publishers_pub__id
+      - name: pub_id
         description: Primary Key of the source system
         tests:
           - not_null
           - unique
-      - name: publishers_pub_name
-        description: Publisher Name
-      - name: publishers_city
-        description: Publisher City
-      - name: publishers_state
-        description: Publisher State
-      - name: publishers_country
-        description: Publisher Country
+
+
 

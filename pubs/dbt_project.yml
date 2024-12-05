@@ -37,7 +37,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   pubs:
-    +materialized: table
-    database: analytics
-    +schema: pubs
-
+      +materialized: table
+      database: analytics
+      +schema: pubs
