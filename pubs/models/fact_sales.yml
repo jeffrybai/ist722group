@@ -4,16 +4,18 @@ models:
   - name: fact_order_sales
     description: Order level fact table. Transaction one row per product item ordered
     columns:
+      - name: order_number
+        description: Order Number
       - name: titles_key
         description: Dimension key for dim_titles
       - name: publishers_key
         description: Dimension key for dim_publishers
       - name: stores_key
-        description: role play Order Date Dimension key for dim_dstores
+        description: role play Order Date Dimension key for dim_stores
       - name: order_date
         description: Date of the order
       - name: quantity
-        description: quantity orderd
+        description: quantity ordered
       - name: title_titles
         description: title of the book ordered
       - name: title_price
