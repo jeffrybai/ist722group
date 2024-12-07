@@ -30,8 +30,11 @@ dim_date AS (
 )
 
 SELECT 
+   dt.titles_key,
     t.title_id,
+    a.authors_key,
     a.author_id,
+    p.publishers_key,
     dt.publisher_id,
     p.publisher_name,
     dt.published_date,
@@ -41,7 +44,7 @@ SELECT
     dt.title_royalty,
     (dt.title_ytd_sales * dt.title_royalty / 100) AS royalty_amount_per_title,
     t.royaltyper,
-    (dt.title_ytd_sales * t.royaltyper / 100) AS royalty_amount_per_author
+    (dt.title_ytd_sales * t.royaltyper / 100) AS royalty_amount_per_author,
 FROM RAW.PUBS.TitleAuthor t
 LEFT JOIN dim_titles dt ON t.title_id = dt.title_id
 LEFT JOIN dim_authors a ON t.au_id = a.author_id
