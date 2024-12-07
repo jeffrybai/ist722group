@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fact_employees
+    description: One row represent an employee
+    columns:
+      - name: assignment_key
+        description: Degenerate dimension of fact table.
+        tests:
+          - unique
+          - not_null
+      - name: employee_key
+        description: Degenerate dimension of employee.
+        tests:
+          - unique
+          - not_null
+      - name: job_key
+        description: Degenerate key for job table.
+        tests:
+          - not_null
+      - name: publisher_key
+        description: Degenerate key for dim_publisher.
+        tests:
+          - not_null
