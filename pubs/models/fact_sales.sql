@@ -1,41 +1,55 @@
-with stg_titles as 
-(
+with stg_titles as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key, 
-    from {{source('pubs','Sales')}}
+        {{dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key,
+        title_id,
+        title as title_title,
+        pub_id,
+        price as title_price,
+        ytd_sales as title_ytd_sales
+    from {{source('pubs','Titles') }}
 ),
-with stg_publishers
-(
+stg_publishers as (
     select
-        {{ dbt_utils.generate_surrogate_key(['pub_id']) }} as publishers_key
-    from     from {{source('pubs','Publishers')}}
+        {{dbt_utils.generate_surrogate_key(['pub_id']) }} as publishers_key,
+        pub_id,
+        pub_name
+    from {{source('pubs','Publishers') }}
 ),
-with stg_stores
-(
-    select
-         {{ dbt_utils.generate_surrogate_key(['stor_id']) }} as stors_key
-    from {{source('pubs','Stores')}}
-),     
-stg_sales as
-(
+stg_stores as (
     select 
-    ord_num,
-    sum(Quantity) as quantity, 
-    sum(Quantity*) as extendedpriceamount,
-    sum((Quantity*UnitPrice)*Discount) as discountamount,
-    sum(((Quantity*UnitPrice))-((Quantity*UnitPrice)*Discount)) as soldamount
-    from {{source('northwind','Order_Details')}}
-    group by orderid,productkey
-)
-select 
-    stg_sales.ord_num,
-    stg_orders.employeekey,
-    stg_orders.customerkey,
-    stg_orders.orderdatekey,
-    stg_order_details.productkey,
-    stg_order_details.quantity,
-    stg_order_details.extendedpriceamount,
-    stg_order_details.discountamount,
-    stg_order_details.soldamount
-from stg_sales
-left join stg_titles on stg_title_id = stg_sales.stg_title_id
+        {{dbt_utils.generate_surrogate_key(['stor_id']) }} as stores_key,
+        stor_id,
+        stor_name
+    from {{ source('pubs','Stores') }}
+),
+stg_sales as (
+    select
+        ord_num,
+        {{dbt_utils.generate_surrogate_key(['stor_id']) }} as stores_key,
+        title_id,
+        ord_date as order_date,
+        qty as quantity
+    from {{source ('pubs', 'Sales') }}
+    group by ord_num, ord_date, title_id, stor_id,qty
+),
+
+select
+    s.ord_num,
+    t.titles_key,
+    p.publishers_key,
+    s.stores_key,
+    s.order_date
+    quantity,
+    title_title,
+    title_price,
+    title_ytd_sales,
+    (s.quantity * t.title_price) as extended_price_amount,
+    (s.quantity * t.title_price * d.discount) as discount_amount,
+    ((s.quantity * t.title_price) - (s.quantity * t.title_price * d.discount)) as net_sales_amount,
+    ((s.quantity * t.title_price) * ta.royaltyper) as total_royalty_amount
+from raw.pubs.sales s
+join raw.pubs.titles t on s.title_id = t.title_id
+join raw.pubs.publishers p on t.pub_id  = p.pub_id
+join raw.pubs.stores st on s.stores_key= st.stores_key
+left join {{ source('pubs','Discounts') }} d on s.stores_key = d.stor_id
+left join {{ source('pubs','TitleAuthor') }} ta on t.title_id = ta.title_id
