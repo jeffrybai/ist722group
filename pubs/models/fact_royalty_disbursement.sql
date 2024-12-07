@@ -1,6 +1,6 @@
 WITH
 dim_titles AS (
-    SELECT title_id, titles_key, title_ytd_sales, title_royalty , title
+    SELECT title_id, titles_key, title_ytd_sales, title_royalty , title, published_date, publisher_id
     FROM {{ ref('dim_titles') }}
 ),
 dim_authors AS (
@@ -8,7 +8,7 @@ dim_authors AS (
     FROM {{ ref('dim_authors') }}
 ),
 dim_publishers AS (
-    SELECT publisher_id, publishers_key 
+    SELECT publisher_id,publishers_key,publisher_name ,
     FROM {{ ref('dim_publishers') }}
 ),
 dim_date AS (
@@ -31,7 +31,10 @@ dim_date AS (
 
 SELECT 
     t.title_id,
-    t.au_id,
+    a.author_id,
+    dt.publisher_id,
+    p.publisher_name,
+    dt.published_date,
     a.author_name,
     dt.title,
     dt.title_ytd_sales,
@@ -42,3 +45,4 @@ SELECT
 FROM RAW.PUBS.TitleAuthor t
 LEFT JOIN dim_titles dt ON t.title_id = dt.title_id
 LEFT JOIN dim_authors a ON t.au_id = a.author_id
+LEFT JOIN dim_publishers p on dt.publisher_id= p.publisher_id
