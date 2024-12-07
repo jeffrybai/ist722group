@@ -46,7 +46,7 @@ select
     (s.qty * t.price) as extended_price_amount,
     (s.qty * t.price * d.discount) as discount_amount,
     ((s.qty * t.price) - (s.qty * t.price * d.discount)) as net_sales_amount,
-    ((s.qty * t.price) * t.royalty) as total_royalty_amount,
+    round(((s.qty * t.price) * t.royalty/100),2) as royalty_amount_per_store,
 from stg_sales as s 
 join stg_titles as t on s.title_id = t.title_id
 join stg_publishers as p on t.pub_id  = p.pub_id
