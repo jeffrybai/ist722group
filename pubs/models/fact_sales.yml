@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fact_order_sales
+    description: Order level fact table. Transaction one row per product item ordered
+    columns:
+      - name: order_number
+        description: Order Number
+      - name: titles_key
+        description: Dimension key for dim_titles
+      - name: publishers_key
+        description: Dimension key for dim_publishers
+      - name: stores_key
+        description: role play Order Date Dimension key for dim_stores
+      - name: order_date
+        description: Date of the order
+      - name: quantity
+        description: quantity ordered
+      - name: title_titles
+        description: title of the book ordered
+      - name: title_price
+        description: price per book
+      - name: title_ytd_sales
+        description: year to date sales
+      - name: extendedpriceamount
+        description: additive fact for quantity * title_price 
+      - name: discount_amount
+        description: additive fact for extended_price_amount * discount
+      - name: net_sales_amount
+        description: additive extended price - discount amount
+      - name: total_royalty_amount
+        description: additive extended price * royaltyper
+
+
