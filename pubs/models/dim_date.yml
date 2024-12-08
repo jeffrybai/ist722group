@@ -4,7 +4,7 @@ models:
   - name: dim_date
     description: Conformed Date Dimension. One row per day of the year.
     columns:
-      - name: datekey 
+      - name: date_key 
         data_type: int 
         description: The surrogate key of the date YYYYMMDD
         tests:
@@ -15,3 +15,12 @@ models:
         tests:
           - not_null
           - unique
+      - name: year
+        description: The year of the date key
+        tests:
+          - not_null
+      - name: month
+        description: The month of the date key
+        tests:
+          - not_null
+             

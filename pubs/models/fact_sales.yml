@@ -11,9 +11,11 @@ models:
       - name: publishers_key
         description: Dimension key for dim_publishers
       - name: stores_key
-        description: role play Order Date Dimension key for dim_stores
+        description: Dimension key for dim_stores
+      - name: orderdate_key
+        description: Dimension key for dim_date
       - name: order_date
-        description: Date of the order
+        description: Order date
       - name: quantity
         description: quantity ordered
       - name: title_titles
@@ -22,6 +24,8 @@ models:
         description: price per book
       - name: title_ytd_sales
         description: year to date sales
+      - name: order_year
+        description: order year
       - name: extendedpriceamount
         description: additive fact for quantity * title_price 
       - name: discount_amount
@@ -29,6 +33,6 @@ models:
       - name: net_sales_amount
         description: additive extended price - discount amount
       - name: total_royalty_amount
-        description: additive extended price * royaltyper
+        description: additive ytd_sales * royalty
 
 
