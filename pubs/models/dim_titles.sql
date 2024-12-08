@@ -4,6 +4,7 @@ WITH stg_titles AS (
 )
 SELECT
     {{ dbt_utils.generate_surrogate_key(['stg_titles.title_id']) }} AS titles_key,
+    {{ dbt_utils.generate_surrogate_key(['stg_titles.pub_id']) }} AS publishers_key,
     title_id,
     title,
     type AS title_category,

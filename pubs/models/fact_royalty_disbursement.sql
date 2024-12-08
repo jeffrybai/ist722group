@@ -46,5 +46,5 @@ SELECT
     FROM stg_TitleAuthors t
 LEFT JOIN dim_titles dt ON t.titles_key = dt.titles_key
 LEFT JOIN dim_authors a ON t.authors_key = a.authors_key
-LEFT JOIN dim_publishers p ON dt.publisher_id = p.publisher_id
+LEFT JOIN dim_publishers p ON dt.publishers_key = p.publishers_key
 left join dim_date d on dt.published_year= d.YEAR
