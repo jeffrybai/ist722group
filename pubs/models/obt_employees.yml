@@ -23,7 +23,7 @@ models:
         description: Full name of the employee
         tests:
           - not_null
-      - name: hire_date
+      - name: employee_hire_date
         description: Hire Date of the employee
         tests:
           - not_null
