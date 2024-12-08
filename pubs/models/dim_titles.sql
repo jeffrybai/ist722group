@@ -11,5 +11,7 @@ SELECT
     price AS title_price,
     royalty AS title_royalty,
     ytd_sales AS title_ytd_sales,
-    pubdate as published_date
+     EXTRACT(YEAR FROM pubdate) AS published_year,
+    EXTRACT(MONTH FROM pubdate) AS published_month,
+    EXTRACT(DAY FROM pubdate) AS published_day
 FROM stg_titles

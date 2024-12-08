@@ -9,6 +9,9 @@ d_author AS (
 ),
 d_publisher AS (
     SELECT * FROM {{ ref("dim_publishers") }}
+),
+d_date 
+AS ( SELECT * FROM {{ ref("dim_date") }}
 )
 SELECT 
     d_title.*, 
@@ -20,3 +23,4 @@ FROM f_royal_disbursement AS f
 LEFT JOIN d_title ON f.titles_key = d_title.titles_key
 LEFT JOIN d_author ON f.authors_key = d_author.authors_key
 LEFT JOIN d_publisher ON f.publishers_key = d_publisher.publishers_key
+LEFT JOIN d_date ON d_title.published_year = d_date.YEAR
