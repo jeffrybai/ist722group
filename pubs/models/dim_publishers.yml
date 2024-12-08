@@ -9,11 +9,8 @@ models:
         tests:
           - not_null
           - unique
-      - name: pub_id
+      - name: publisher_id
         description: Primary Key of the source system
         tests:
           - not_null
           - unique
-
-
-

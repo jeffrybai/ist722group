@@ -62,6 +62,7 @@ sources:
           - name: pub_id
             tests:
               - unique
+              - not_null
       - name: Employee
         columns:
           - name: emp_id

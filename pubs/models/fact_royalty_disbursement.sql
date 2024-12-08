@@ -1,0 +1,35 @@
+WITH dim_titles AS (
+    SELECT *
+
+    FROM {{ ref('dim_titles') }}
+),
+dim_authors AS (
+    SELECT *
+
+    FROM {{ ref('dim_authors') }}
+),
+dim_publishers AS (
+    SELECT *
+
+    FROM {{ ref('dim_publishers') }}
+)
+SELECT 
+    dt.titles_key,
+    dt.title_id,
+    a.authors_key,
+    a.author_id,
+    p.publishers_key,
+    p.publisher_id,
+    dt.title,
+    p.publisher_name,
+    dt.published_date,
+    a.author_name,
+    dt.title_ytd_sales,
+    dt.title_royalty,
+    (dt.title_ytd_sales * dt.title_royalty / 100) AS royalty_amount_per_title,
+    t.royaltyper,
+    (dt.title_ytd_sales * t.royaltyper / 100) AS royalty_amount_per_author,
+FROM RAW.PUBS.TitleAuthor t
+LEFT JOIN dim_titles dt ON t.title_id = dt.title_id
+LEFT JOIN dim_authors a ON t.au_id = a.author_id
+LEFT JOIN dim_publishers p ON dt.publisher_id = p.publisher_id

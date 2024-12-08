@@ -4,7 +4,7 @@ with stg_authors as (
  
 select
     {{ dbt_utils.generate_surrogate_key(['AU_ID']) }} as authors_key,    
-    AU_ID AS Author_ID,                                            
+    AU_ID AS author_id,                                            
      concat(au_fname , ' ', au_lname) as author_name,                                   
     phone as author_phone,                                            
     address as author_address,                                        
