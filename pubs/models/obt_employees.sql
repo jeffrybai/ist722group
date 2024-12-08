@@ -26,10 +26,10 @@ select
     end as employee_fullname,
     e.hire_date,
     j.job_desc,
-    p.pub_name as employee_company_name,
-    p.city as employee_city,
-    p.state as employee_state,
-    p.country as employee_country
+    p.publisher_name as employee_company_name,
+    p.publisher_city as employee_city,
+    p.publisher_state as employee_state,
+    p.publisher_country as employee_country
 from
         stg_employees e 
     left join stg_jobs j 
