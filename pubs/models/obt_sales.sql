@@ -20,14 +20,14 @@ d_publishers as (
     from {{ ref('dim_publishers') }}
 )
 select 
+    distinct f.order_number,
     d_titles.*, 
     d_stores.*, 
     d_publishers.*,
     d_date.*,
-    f.order_number, f.quantity, f.extended_price_amount, f.discount_amount, f.net_sales_amount, f.total_royalty_amount
+    f.quantity, f.extended_price_amount, f.discount_amount, f.net_sales_amount, f.total_royalty_amount
     from f_sales as f
 left join d_titles on f.titles_key = d_titles.titles_key
 left join d_stores ON f.stores_key = d_stores.stores_key
 left join d_publishers ON f.publishers_key = d_publishers.publishers_key
-left join d_date on f.orderdate_key = d_date.date_key
-
+left join d_date on f.orderdate_key = d_date.datekey
