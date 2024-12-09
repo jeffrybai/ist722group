@@ -11,13 +11,7 @@ d_stores as (
     select * from {{ ref('dim_stores') }}
 ),
 d_publishers as (
-    select 
-        publishers_key,
-        publisher_name,
-        publisher_city,
-        publisher_state,
-        publisher_country
-    from {{ ref('dim_publishers') }}
+    select * from {{ ref('dim_publishers') }}
 )
 select 
     distinct f.order_number,
@@ -30,4 +24,4 @@ select
 left join d_titles on f.titles_key = d_titles.titles_key
 left join d_stores ON f.stores_key = d_stores.stores_key
 left join d_publishers ON f.publishers_key = d_publishers.publishers_key
-left join d_date on f.orderdate_key = d_date.datekey
+left join d_date on f.orderdate_key = d_date.date_key

@@ -1,26 +1,16 @@
 with stg_titles as (
-    select 
+    select *,
         {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key,
-        title_id,
-        title,
-        pub_id,
-        price,
-        ytd_sales,
-        royalty
     from {{source('pubs','Titles') }}
 ),
 stg_publishers as (
-    select
+    select *,
         {{ dbt_utils.generate_surrogate_key(['pub_id']) }} as publishers_key,
-        pub_id,
-        pub_name
     from {{source('pubs','Publishers') }}
 ),
 stg_stores as (
-    select 
+    select *,
         {{ dbt_utils.generate_surrogate_key(['stor_id']) }} as stores_key,
-        stor_id,
-        stor_name
     from {{ source('pubs','Stores') }}
 ),
 stg_sales as (
