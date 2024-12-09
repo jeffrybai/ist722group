@@ -19,7 +19,11 @@ dim_date AS (
     FROM {{ ref('dim_date') }}
 ),
 
-stg_TitleAuthors as (select AU_ID AS author_id, title_id, AU_ORD, royaltyper
+stg_TitleAuthors as (select
+    {{ dbt_utils.generate_surrogate_key(['au_id']) }} as authors_key, 
+    {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key, 
+    AU_ORD, 
+    royaltyper ,                                             
 FROM {{ source('pubs', 'TitleAuthor')}}
 )
 
@@ -40,7 +44,7 @@ SELECT
     t.royaltyper,
     (dt.title_ytd_sales * t.royaltyper / 100) AS royalty_amount_per_author,
     FROM stg_TitleAuthors t
-LEFT JOIN dim_titles dt ON t.title_id = dt.title_id
-LEFT JOIN dim_authors a ON t.author_id = a.author_id
-LEFT JOIN dim_publishers p ON dt.publisher_id = p.publisher_id
+LEFT JOIN dim_titles dt ON t.titles_key = dt.titles_key
+LEFT JOIN dim_authors a ON t.authors_key = a.authors_key
+LEFT JOIN dim_publishers p ON dt.publishers_key = p.publishers_key
 left join dim_date d on dt.published_year= d.YEAR
