@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: obt_employees
+    description: One row represent an employee
+    columns:
+      - name: employee_id
+        description: Surrogate key from source system of employee
+        tests:
+          - unique
+          - not_null
+      - name: employee_firstname
+        description: First name of the employee
+        tests:
+          - not_null
+      - name: employee_middle_initial
+        description: Middle initial of the employee if available.
+      - name: employee_lastname
+        description: Last name of the employee
+        tests:
+          - not_null
+      - name: employee_fullname
+        description: Full name of the employee
+        tests:
+          - not_null
+      - name: employee_hire_date
+        description: Hire Date of the employee
+        tests:
+          - not_null
+      - name: job_desc
+        description: Job description of the employee
+        tests:
+          - not_null
+      - name: employee_company_name
+        description: Company name of the publisher that is employing the employee
+      - name: employee_city
+        description: City of the employee company
+      - name: employee_state
+        description: State of the employee company
+      - name: employee_country
+        description: Country of the employee company

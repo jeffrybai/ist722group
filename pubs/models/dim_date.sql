@@ -1,5 +1,5 @@
 select     
-    datekey::int as datekey,
+    datekey::int as date_key,
     date,
     year,
     month,
