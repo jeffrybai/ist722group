@@ -37,18 +37,15 @@ select
     p.publishers_key,
     st.stores_key,
     s.orderdate_key,
-    s.qty as quantity,
-    t.title as title_title,
-    t.price as title_price,
     dt.order_year,
-    t.ytd_sales as title_ytd_sales,
+    t.title as title_title,
+    s.qty as quantity,
+    t.price as title_price,
     (s.qty * t.price) as extended_price_amount,
-    (s.qty * t.price * d.discount) as discount_amount,
-    ((s.qty * t.price) - (s.qty * t.price * d.discount)) as net_sales_amount,
-    round((t.ytd_sales * t.royalty/100),2) as total_royalty_amount
+    round((t.ytd_sales * t.royalty/100),2) as total_royalty_amount 
 from stg_sales as s 
 left join stg_titles as t on s.title_id = t.title_id
 left join stg_publishers as p on t.pub_id  = p.pub_id
 left join stg_stores as st on s.stor_id = st.stor_id
 left join stg_date as dt on s.orderdate_key = dt.orderdate_key
-left join {{ source('pubs','Discounts') }} as d on s.stor_id = d.stor_id
+

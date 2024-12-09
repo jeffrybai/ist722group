@@ -5,7 +5,7 @@ models:
     description: Order level fact table. Transaction one row per product item ordered
     columns:
       - name: order_number
-        description: Order Number
+        description: Order Number, surrogate titles_key, publishers_key, stores_key
       - name: titles_key
         description: Dimension key for dim_titles
       - name: publishers_key
@@ -14,25 +14,22 @@ models:
         description: Dimension key for dim_stores
       - name: orderdate_key
         description: Dimension key for dim_date
-      - name: order_date
-        description: Order date
+      - name: order_year
+        description: Order year
       - name: quantity
         description: quantity ordered
-      - name: title_titles
+      - name: title_title
         description: title of the book ordered
       - name: title_price
-        description: price per book
-      - name: title_ytd_sales
-        description: year to date sales
-      - name: order_year
-        description: order year
+        data_type: money
+        description: price per book (degenerate dimension)
+      - name: store_title_ytd_sales
+        description: title year to date sales by store 
       - name: extendedpriceamount
+        data_type: money
         description: additive fact for quantity * title_price 
-      - name: discount_amount
-        description: additive fact for extended_price_amount * discount
-      - name: net_sales_amount
-        description: additive extended price - discount amount
       - name: total_royalty_amount
+        data_type: money
         description: additive ytd_sales * royalty
 
 
