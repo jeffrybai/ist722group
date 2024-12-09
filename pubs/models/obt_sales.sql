@@ -5,7 +5,9 @@ d_date as (
     select * from {{ ref('dim_date') }}
 ),
 d_titles as (
-    select * from {{ ref('dim_titles') }}
+    select *
+    EXCLUDE (publishers_key, publisher_id)
+    FROM {{ ref("dim_titles") }}
 ),
 d_stores as (
     select * from {{ ref('dim_stores') }}
