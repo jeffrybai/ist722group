@@ -10,4 +10,5 @@ SELECT
     type AS title_category,
     price AS title_price,
     royalty AS title_royalty,
+    pubdate as published_year
 FROM stg_titles
