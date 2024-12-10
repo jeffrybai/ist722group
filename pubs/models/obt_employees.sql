@@ -2,6 +2,7 @@ with stg_employees as (
     select 
         fe.assignment_key,
         de.*,
+        fe.employee_fullname,
         fe.job_key,
         fe.publisher_key
      from 
@@ -29,12 +30,7 @@ select
     e.employee_firstname,
     e.employee_middle_initial,
     e.employee_lastname,
-    case
-        when employee_middle_initial is null or employee_middle_initial = '' 
-            then concat(employee_firstname, ' ', e.employee_lastname)
-        else 
-            concat(employee_firstname, ' ', employee_middle_initial, ' ', employee_lastname)
-    end as employee_fullname,
+    e.employee_fullname,
     j.job_desc,
     p.publisher_name as employee_company_name,
     p.publisher_city as employee_city,
