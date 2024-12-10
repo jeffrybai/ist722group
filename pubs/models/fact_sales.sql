@@ -1,4 +1,4 @@
-with stg_titles as (
+ with stg_titles as (
     select *,
         {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key,
     from {{source('pubs','Titles') }}
@@ -42,7 +42,8 @@ select
     s.qty as quantity,
     t.price as title_price,
     (s.qty * t.price) as extended_price_amount,
-    round((t.ytd_sales * t.royalty/100),2) as total_royalty_amount 
+    
+    round(( * t.royalty/100),2) as total_royalty_amount 
 from stg_sales as s 
 left join stg_titles as t on s.title_id = t.title_id
 left join stg_publishers as p on t.pub_id  = p.pub_id
