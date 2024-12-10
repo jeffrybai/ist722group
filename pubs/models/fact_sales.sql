@@ -125,24 +125,19 @@ select distinct
     st.stores_key,
     s.orderdate_key,
     dt.order_year,
+    t.title as title_title,
+    t.price as title_price,
     s.qty as quantity,
-    t.price as price,
     (s.qty * t.price) as extended_price_amount,
-    r.royalty_percentage as annual_royalty_percentage,
     sd.discount_percentage as discount_percentage,
     round(extended_price_amount * (discount_percentage / 100), 2) as discount_amount,
-    (extended_price_amount - discount_amount) as net_sales
+    (extended_price_amount - discount_amount) as net_sales,
+    r.royalty_percentage as annual_royalty_percentage,
 from stg_sales as s 
-    left join stg_titles as t 
-        on s.title_id = t.title_id
-    left join stg_publishers as p 
-        on t.pub_id  = p.pub_id
-    left join stg_stores as st 
-        on s.stor_id = st.stor_id
-    left join stg_date as dt 
-        on s.orderdate_key = dt.orderdate_key
-    left join stg_royalty as r
-        on s.title_id = r.title_id 
+    left join stg_titles as t on s.title_id = t.title_id
+    left join stg_publishers as p  on t.pub_id  = p.pub_id
+    left join stg_stores as st on s.stor_id = st.stor_id
+    left join stg_date as dt on s.orderdate_key = dt.orderdate_key
+    left join stg_royalty as r on s.title_id = r.title_id 
         and dt.order_year = r.order_year
-    left join stg_discounts sd
-        on s.order_number = sd.order_number
+    left join stg_discounts sd  on s.order_number = sd.order_number
