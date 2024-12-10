@@ -1,5 +1,13 @@
 with stg_employees as (
-    select * from {{ ref('dim_employees') }}
+    select 
+        fe.assignment_key,
+        de.*,
+        fe.job_key,
+        fe.publisher_key
+     from 
+            {{ ref('dim_employees') }} de
+        LEFT JOIN {{ ref('fact_employees')}} fe
+            ON de.employee_key = fe.employee_key
 ),
 
 stg_jobs as (
