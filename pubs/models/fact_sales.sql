@@ -31,6 +31,8 @@ stg_date as (
         year(ord_date) as order_year
     from {{ source('pubs', 'Sales')}}
 ),
+
+--Annual sales calc
 stg_annual_sales as (
     select
         s.title_id,
@@ -51,7 +53,70 @@ stg_royalty as (
     left join {{ source('pubs', 'RoySched') }} rs
         on a.title_id = rs.title_id
         and a.annual_sales between rs.lorange and rs.hirange
+),
+
+--Discounts Staging
+stg_customer_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage,
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on s.stor_id = d.stor_id
+        and d.DISCOUNTTYPE = 'Customer Discount'
+),
+stg_initial_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on d.DISCOUNTTYPE = 'Initial Customer'
+    where not exists (
+        select 1 
+        from stg_sales s2
+        where s2.stor_id = s.stor_id
+          and s2.ord_date < s.ord_date
+    )
+),
+stg_volume_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on d.DISCOUNTTYPE = 'Volume Discount'
+        and s.qty between d.LOWQTY and d.HIGHQTY
+),
+stg_discounts as (
+    select
+        s.order_number,
+        -- Sum discounts across all types for each order_number
+        coalesce(cd.discount_percentage, 0) +
+        coalesce(id.discount_percentage, 0) +
+        coalesce(vd.discount_percentage, 0) as discount_percentage,
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join (
+        select order_number, discount_percentage
+        from stg_customer_discount
+    ) cd on s.order_number = cd.order_number
+    left join (
+        select order_number, discount_percentage
+        from stg_initial_discount
+    ) id on s.order_number = id.order_number
+    left join (
+        select order_number, discount_percentage
+        from stg_volume_discount
+    ) vd on s.order_number = vd.order_number
 )
+
 
 select distinct
     s.order_number,
@@ -64,7 +129,9 @@ select distinct
     t.price as price,
     (s.qty * t.price) as extended_price_amount,
     r.royalty_percentage as annual_royalty_percentage,
-    round((extended_price_amount * annual_royalty_percentage/100),2) as royalty_amount 
+    sd.discount_percentage as discount_percentage,
+    round(extended_price_amount * (discount_percentage / 100), 2) as discount_amount,
+    (extended_price_amount - discount_amount) as net_sales
 from stg_sales as s 
     left join stg_titles as t 
         on s.title_id = t.title_id
@@ -77,3 +144,5 @@ from stg_sales as s
     left join stg_royalty as r
         on s.title_id = r.title_id 
         and dt.order_year = r.order_year
+    left join stg_discounts sd
+        on s.order_number = sd.order_number

@@ -25,7 +25,9 @@ select
     fs.quantity, 
     fs.price,
     fs.extended_price_amount, 
-    fs.royalty_amount
+    fs.discount_percentage,
+    fs.discount_amount,
+    fs.net_sales
 from f_sales as fs
     left join d_titles as dt
         on fs.titles_key = dt.titles_key
