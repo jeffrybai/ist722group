@@ -33,7 +33,7 @@ SELECT
     p.publishers_key,
     dt.title_id,
     a.author_id,
-    dt.title,
+    dt.title_title as title,
     p.publisher_name,
     dt.published_year,
     a.author_name,

@@ -9,7 +9,6 @@ with stg_employees as (
         LEFT JOIN {{ ref('fact_employees')}} fe
             ON de.employee_key = fe.employee_key
 ),
-
 stg_jobs as (
     select 
         {{ dbt_utils.generate_surrogate_key(['JOB_ID']) }} as job_key,
@@ -47,6 +46,6 @@ from
     left join stg_jobs j 
         on e.job_key = j.job_key
     left join stg_publishers p 
-        on e.publishers_key = p.publishers_key
+        on e.publisher_key = p.publishers_key
     left join stg_date d 
         on e.HIRE_DATE_KEY = d.date_key

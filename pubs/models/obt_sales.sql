@@ -15,15 +15,23 @@ d_stores as (
 d_publishers as (
     select * from {{ ref('dim_publishers') }}
 )
+
 select 
-    distinct f.order_number,
-    d_titles.*, 
-    d_stores.*, 
-    d_publishers.*,
-    d_date.*,
-    f.quantity, f.extended_price_amount, f.total_royalty_amount
-    from f_sales as f
-left join d_titles on f.titles_key = d_titles.titles_key
-left join d_stores ON f.stores_key = d_stores.stores_key
-left join d_publishers ON f.publishers_key = d_publishers.publishers_key
-left join d_date on f.orderdate_key = d_date.date_key
+    fs.order_number,
+    dt.*,
+    ds.*, 
+    dp.publisher_name,
+    dd.*,
+    fs.quantity, 
+    fs.price,
+    fs.extended_price_amount, 
+    fs.royalty_amount
+from f_sales as fs
+    left join d_titles as dt
+        on fs.titles_key = dt.titles_key
+    left join d_stores as ds 
+        ON fs.stores_key = ds.stores_key
+    left join d_publishers dp
+        ON fs.publishers_key = dp.publishers_key
+    left join d_date as dd
+        on fs.orderdate_key = dd.date_key
