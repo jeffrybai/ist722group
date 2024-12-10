@@ -2,7 +2,7 @@ WITH f_royal_disbursement AS (
     SELECT * FROM {{ ref("fact_royalty_disbursement") }}
 ),
 d_title AS (
- SELECT * EXCLUDE (publishers_key, publisher_id)
+ SELECT * EXCLUDE (publishers_key)
  FROM {{ ref("dim_titles") }}
 ),
 d_author AS (

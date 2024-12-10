@@ -14,7 +14,8 @@ models:
         tests:
           - not_null
           - unique
-      - name: publisher_id
+      - name: publishers_key
         description: FK to dim_publisher
         tests:
           - not_null
+      

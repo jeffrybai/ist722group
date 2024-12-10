@@ -47,6 +47,6 @@ from
     left join stg_jobs j 
         on e.job_key = j.job_key
     left join stg_publishers p 
-        on e.publisher_key = p.publishers_key
+        on e.publishers_key = p.publishers_key
     left join stg_date d 
         on e.HIRE_DATE_KEY = d.date_key
