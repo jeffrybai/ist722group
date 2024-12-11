@@ -31,6 +31,11 @@ stg_date as (
         year(ord_date) as order_year
     from {{ source('pubs', 'Sales')}}
 ),
+stg_roysched as(
+    select *,
+        {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key,                                                   
+    from  {{ source('pubs', 'RoySched')}}
+),
 
 --Annual sales calc
 stg_annual_sales as (
@@ -38,7 +43,7 @@ stg_annual_sales as (
         s.title_id,
         d.order_year,
         sum(s.qty * t.price) as annual_sales
-    from stg_sales as s
+    from stg_sales s
     left join stg_titles t on s.title_id = t.title_id
     left join stg_date d on s.orderdate_key = d.orderdate_key
     group by s.title_id, d.order_year
@@ -50,7 +55,7 @@ stg_royalty as (
         a.annual_sales,
         rs.royalty as royalty_percentage
     from stg_annual_sales as a
-    left join {{ source('pubs', 'RoySched') }} rs
+    left join stg_roysched rs
         on a.title_id = rs.title_id
         and a.annual_sales between rs.lorange and rs.hirange
 ),

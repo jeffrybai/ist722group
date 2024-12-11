@@ -1,35 +1,58 @@
 version: 2
 
 models:
-  - name: fact_order_sales
-    description: Order level fact table. Transaction one row per product item ordered
+  - name: fact_sales
+    description: Order level fact table. Transaction one row per book/store/ordernumber
     columns:
       - name: order_number
         description: Order Number, surrogate titles_key, publishers_key, stores_key
+        tests:
+          - not_null
+          - unique
       - name: titles_key
         description: Dimension key for dim_titles
+        tests:
+          - not_null
       - name: publishers_key
         description: Dimension key for dim_publishers
+        tests:
+          - not_null
       - name: stores_key
         description: Dimension key for dim_stores
+        tests:
+          - not_null
       - name: orderdate_key
         description: Dimension key for dim_date
+        tests:
+          - not_null
       - name: order_year
         description: Order year
-      - name: quantity
-        description: quantity ordered
+        tests:
+          - not_null
       - name: title_title
         description: title of the book ordered
       - name: title_price
         data_type: money
         description: price per book (degenerate dimension)
-      - name: store_title_ytd_sales
-        description: title year to date sales by store 
-      - name: extendedpriceamount
+        tests:
+          - not_null
+      - name: quantity
+        description: quantity ordered
+      - name: extended_price_amount
         data_type: money
         description: additive fact for quantity * title_price 
-      - name: total_royalty_amount
+        tests:
+          - not_null
+      - name: discount_percentage
+        description: discount percentage
+      - name: discount_amount
         data_type: money
-        description: additive ytd_sales * royalty
+        description: additive fact for extended_price_amount * discount_percentage/100
+      - name: net_sales_amount
+        data_type: money
+      - name: annual_royalty_amount
+        description: royalty/100
+
+          
 
 
