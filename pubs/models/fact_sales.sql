@@ -39,7 +39,7 @@ stg_roysched as(
 
 --Annual sales calc
 stg_annual_sales as (
-    select
+    select distinct
         s.title_id,
         d.order_year,
         sum(s.qty * t.price) as annual_sales
@@ -49,7 +49,7 @@ stg_annual_sales as (
     group by s.title_id, d.order_year
 ),
 stg_royalty as (
-    select
+    select distinct
         a.title_id,
         a.order_year,
         a.annual_sales,
