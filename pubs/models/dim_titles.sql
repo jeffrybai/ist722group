@@ -3,16 +3,12 @@ WITH stg_titles AS (
     FROM {{ source('pubs', 'Titles') }}
 )
 SELECT
-    {{ dbt_utils.generate_surrogate_key(['stg_titles.title_id']) }} AS titles_key,
-    {{ dbt_utils.generate_surrogate_key(['stg_titles.pub_id']) }} AS publishers_key,
+    {{ dbt_utils.generate_surrogate_key(['title_id']) }} AS titles_key,
+    {{ dbt_utils.generate_surrogate_key(['pub_id']) }} AS publishers_key,
     title_id,
-    title,
+    title as title_title,
     type AS title_category,
-    pub_id AS publisher_id,
     price AS title_price,
     royalty AS title_royalty,
-    ytd_sales AS title_ytd_sales,
-     EXTRACT(YEAR FROM pubdate) AS published_year,
-    EXTRACT(MONTH FROM pubdate) AS published_month,
-    EXTRACT(DAY FROM pubdate) AS published_day
+    pubdate as published_year
 FROM stg_titles

@@ -62,12 +62,12 @@ stg_sales AS (
 SELECT 
     t.titles_key,
     a.authors_key,
-    publishers_key,
-    s.order_year AS YEAR,
+    p.publishers_key,
+    s.order_year ,
     t.ytd_sales,
-    t.royalty AS Percentage_royalty,
+    t.royalty AS royalty_percentage,
     (t.ytd_sales * t.royalty / 100) AS total_royalty,
-    ta.royaltyper AS AUTHORS_PERCENTAGE,
+    ta.royaltyper AS authors_percentage,
     (t.ytd_sales * t.royalty / 100 * ta.royaltyper / 100) AS royalty_per_author
 FROM 
     stg_TitleAuthors ta
@@ -79,5 +79,3 @@ LEFT JOIN
     stg_sales s ON t.title_id = s.title_id
 LEFT JOIN 
     stg_publishers p ON t.pub_id = p.pub_id 
-ORDER BY 
-    s.order_year

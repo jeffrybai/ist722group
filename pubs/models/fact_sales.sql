@@ -1,30 +1,20 @@
-with stg_titles as (
-    select 
+ with stg_titles as (
+    select *,
         {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key,
-        title_id,
-        title,
-        pub_id,
-        price,
-        ytd_sales,
-        royalty
     from {{source('pubs','Titles') }}
 ),
 stg_publishers as (
-    select
+    select *,
         {{ dbt_utils.generate_surrogate_key(['pub_id']) }} as publishers_key,
-        pub_id,
-        pub_name
     from {{source('pubs','Publishers') }}
 ),
 stg_stores as (
-    select 
+    select *,
         {{ dbt_utils.generate_surrogate_key(['stor_id']) }} as stores_key,
-        stor_id,
-        stor_name
     from {{ source('pubs','Stores') }}
 ),
 stg_sales as (
-    select
+    select  
         {{ dbt_utils.generate_surrogate_key(['ord_num','title_id','stor_id']) }} as order_number, 
         ord_num,
         ord_date,
@@ -40,25 +30,119 @@ stg_date as (
         to_char(ord_date,'YYYYMMDD') as orderdate_key,
         year(ord_date) as order_year
     from {{ source('pubs', 'Sales')}}
+),
+
+--Annual sales calc
+stg_annual_sales as (
+    select
+        s.title_id,
+        d.order_year,
+        sum(s.qty * t.price) as annual_sales
+    from stg_sales as s
+    left join stg_titles t on s.title_id = t.title_id
+    left join stg_date d on s.orderdate_key = d.orderdate_key
+    group by s.title_id, d.order_year
+),
+stg_royalty as (
+    select
+        a.title_id,
+        a.order_year,
+        a.annual_sales,
+        rs.royalty as royalty_percentage
+    from stg_annual_sales as a
+    left join {{ source('pubs', 'RoySched') }} rs
+        on a.title_id = rs.title_id
+        and a.annual_sales between rs.lorange and rs.hirange
+),
+
+--Discounts Staging
+stg_customer_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage,
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on s.stor_id = d.stor_id
+        and d.DISCOUNTTYPE = 'Customer Discount'
+),
+stg_initial_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on d.DISCOUNTTYPE = 'Initial Customer'
+    where not exists (
+        select 1 
+        from stg_sales s2
+        where s2.stor_id = s.stor_id
+          and s2.ord_date < s.ord_date
+    )
+),
+stg_volume_discount as (
+    select
+        s.order_number,
+        s.stor_id,
+        d.discount as discount_percentage
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join {{ source('pubs', 'Discounts') }} d
+        on d.DISCOUNTTYPE = 'Volume Discount'
+        and s.qty between d.LOWQTY and d.HIGHQTY
+),
+stg_discounts as (
+    select
+        s.order_number,
+        -- Sum discounts across all types for each order_number
+        coalesce(cd.discount_percentage, 0) +
+        coalesce(id.discount_percentage, 0) +
+        coalesce(vd.discount_percentage, 0) as discount_percentage,
+    from stg_sales s
+    left join stg_titles t on s.title_id = t.title_id
+    left join (
+        select order_number, discount_percentage
+        from stg_customer_discount
+    ) cd on s.order_number = cd.order_number
+    left join (
+        select order_number, discount_percentage
+        from stg_initial_discount
+    ) id on s.order_number = id.order_number
+    left join (
+        select order_number, discount_percentage
+        from stg_volume_discount
+    ) vd on s.order_number = vd.order_number
 )
-select
+
+
+select distinct
     s.order_number,
     t.titles_key,
     p.publishers_key,
     st.stores_key,
     s.orderdate_key,
-    s.qty as quantity,
-    t.title as title_title,
-    t.price as title_price,
     dt.order_year,
-    t.ytd_sales as title_ytd_sales,
+    s.qty as quantity,
+    t.price as price,
     (s.qty * t.price) as extended_price_amount,
-    (s.qty * t.price * d.discount) as discount_amount,
-    ((s.qty * t.price) - (s.qty * t.price * d.discount)) as net_sales_amount,
-    round((t.ytd_sales * t.royalty/100),2) as total_royalty_amount
+    r.royalty_percentage as annual_royalty_percentage,
+    sd.discount_percentage as discount_percentage,
+    round(extended_price_amount * (discount_percentage / 100), 2) as discount_amount,
+    (extended_price_amount - discount_amount) as net_sales
 from stg_sales as s 
-join stg_titles as t on s.title_id = t.title_id
-join stg_publishers as p on t.pub_id  = p.pub_id
-join stg_stores as st on s.stor_id = st.stor_id
-join stg_date as dt on s.orderdate_key = dt.orderdate_key
-left join {{ source('pubs','Discounts') }} as d on s.stor_id = d.stor_id
+    left join stg_titles as t 
+        on s.title_id = t.title_id
+    left join stg_publishers as p 
+        on t.pub_id  = p.pub_id
+    left join stg_stores as st 
+        on s.stor_id = st.stor_id
+    left join stg_date as dt 
+        on s.orderdate_key = dt.orderdate_key
+    left join stg_royalty as r
+        on s.title_id = r.title_id 
+        and dt.order_year = r.order_year
+    left join stg_discounts sd
+        on s.order_number = sd.order_number
