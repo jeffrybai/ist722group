@@ -22,12 +22,13 @@ stg_authors AS (
         zip AS author_zip                                            
     FROM {{ source('pubs', 'Authors') }}
 ),
-stg_publishers AS (
+stg_royshed AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['pub_id']) }} AS publishers_key,
-        pub_id,
-        pub_name AS publisher_name
-    FROM {{ source('pubs', 'Publishers') }}
+        {{ dbt_utils.generate_surrogate_key(['title_id']) }} AS titles_key_key,
+    lorange,
+    hirange,
+    royalty
+    FROM {{ source('pubs', 'RoySched') }}
 ),
 
 stg_TitleAuthors AS (
@@ -74,7 +75,6 @@ stg_sales AS (
 SELECT 
     t.titles_key,
     a.authors_key,
-    p.publishers_key,
     d.DATEKEY AS date_key,
     s.order_year ,
     t.ytd_sales,
@@ -91,6 +91,6 @@ LEFT JOIN
 LEFT JOIN
     stg_sales s ON t.title_id = s.title_id
 LEFT JOIN 
-    stg_publishers p ON t.pub_id = p.pub_id 
+    stg_royshed r ON ta.titles_key = r.titles_key
 LEFT JOIN 
  dim_date d ON s.orderdate_key = d.DATEKEY

@@ -9,8 +9,8 @@ d_title AS (
 d_author AS (
     SELECT * FROM {{ ref("dim_authors") }}
 ),
-d_publishers as ( 
-    SELECT * FROM {{ ref("dim_publishers") }}
+d_royalsched as ( 
+    SELECT * FROM {{ ref("dim_royalty_schedule") }}
 ),
 d_date 
 AS ( SELECT * FROM {{ ref("dim_date") }}
@@ -19,6 +19,7 @@ SELECT
     d_title.*, 
     d_author.*, 
     d_publishers.*, 
+    d_royalsched.*,
     f.order_year, 
     f.royalty_percentage,
     f.total_royalty,
@@ -27,5 +28,5 @@ SELECT
 FROM f_royal_disbursement AS f
 LEFT JOIN d_title ON f.titles_key = d_title.titles_key
 LEFT JOIN d_author ON f.authors_key = d_author.authors_key
-LEFT JOIN d_publishers ON f.publishers_key = d_publishers.publishers_key
+LEFT JOIN d_royalsched ON f.titles_key = d_royalsched.titles_key
 left join d_date as dd on f.order_year = dd.date_key
