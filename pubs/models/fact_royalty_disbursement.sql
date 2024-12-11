@@ -30,13 +30,6 @@ stg_publishers AS (
     FROM {{ source('pubs', 'Publishers') }}
 ),
 
-stg_date AS (
-    SELECT 
-        ord_date,
-        TO_CHAR(ord_date, 'YYYYMMDD') AS orderdate_key,
-        EXTRACT(YEAR FROM ord_date) AS order_year
-    FROM {{ source('pubs', 'Sales') }}
-),
 stg_TitleAuthors AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key(['au_id']) }} AS authors_key, 
@@ -47,6 +40,25 @@ stg_TitleAuthors AS (
         royaltyper                               
     FROM {{ source('pubs', 'TitleAuthor') }}
 ),
+
+dim_date AS (
+    SELECT 
+    TO_CHAR(DATE, 'YYYYMMDD') AS DATEKEY,
+        DATE,
+        YEAR,
+        MONTH,
+        QUARTER,
+        DAY, 
+        DAYOFWEEK,
+        WEEKOFYEAR,
+        DAYOFYEAR,
+        QUARTERNAME,
+        MONTHNAME,
+        DAYNAME,
+        WEEKDAY
+    FROM {{ ref('dim_date') }}
+),
+
 stg_sales AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key(['ord_num', 'title_id', 'stor_id']) }} AS order_number, 
@@ -63,6 +75,7 @@ SELECT
     t.titles_key,
     a.authors_key,
     p.publishers_key,
+    d.DATEKEY AS date_key,
     s.order_year ,
     t.ytd_sales,
     t.royalty AS royalty_percentage,
@@ -79,3 +92,5 @@ LEFT JOIN
     stg_sales s ON t.title_id = s.title_id
 LEFT JOIN 
     stg_publishers p ON t.pub_id = p.pub_id 
+LEFT JOIN 
+ dim_date d ON s.orderdate_key = d.DATEKEY
