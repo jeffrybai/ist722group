@@ -1,3 +1,3 @@
-WITH stg_royshed AS (
-    SELECT * 
-    FROM {{ source('pubs', 'RoySched') }}
+SELECT
+    *
+FROM {{ source("pubs", 'RoySched') }}
