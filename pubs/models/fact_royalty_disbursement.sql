@@ -1,49 +1,87 @@
-WITH dim_titles AS (
-    SELECT *
-
-    FROM {{ ref('dim_titles') }}
+WITH 
+stg_titles AS (
+    SELECT 
+        {{ dbt_utils.generate_surrogate_key(['title_id']) }} AS titles_key,
+        title_id,
+        title,
+        pub_id,
+        price ,
+        ytd_sales,
+        royalty 
+    FROM {{ source('pubs', 'Titles') }}
 ),
-dim_authors AS (
-    SELECT *
-
-    FROM {{ ref('dim_authors') }}
+stg_authors AS (
+    SELECT
+        {{ dbt_utils.generate_surrogate_key(['AU_ID']) }} AS authors_key,    
+        AU_ID AS author_id,                                            
+        CONCAT(au_fname, ' ', au_lname) AS author_name,                                   
+        phone AS author_phone,                                            
+        address AS author_address,                                        
+        city AS author_city,                                              
+        state AS author_state,                                            
+        zip AS author_zip                                            
+    FROM {{ source('pubs', 'Authors') }}
 ),
-dim_publishers AS (
-    SELECT *
 
-    FROM {{ ref('dim_publishers') }}
+stg_TitleAuthors AS (
+    SELECT
+        {{ dbt_utils.generate_surrogate_key(['au_id']) }} AS authors_key, 
+        {{ dbt_utils.generate_surrogate_key(['title_id']) }} AS titles_key, 
+        title_id,
+        au_id,
+        AU_ORD, 
+        royaltyper                               
+    FROM {{ source('pubs', 'TitleAuthor') }}
 ),
+
 dim_date AS (
-    SELECT *
-
+    SELECT 
+    TO_CHAR(DATE, 'YYYYMMDD') AS DATEKEY,
+        DATE,
+        YEAR,
+        MONTH,
+        QUARTER,
+        DAY, 
+        DAYOFWEEK,
+        WEEKOFYEAR,
+        DAYOFYEAR,
+        QUARTERNAME,
+        MONTHNAME,
+        DAYNAME,
+        WEEKDAY
     FROM {{ ref('dim_date') }}
 ),
 
-stg_TitleAuthors as (select
-    {{ dbt_utils.generate_surrogate_key(['au_id']) }} as authors_key, 
-    {{ dbt_utils.generate_surrogate_key(['title_id']) }} as titles_key, 
-    AU_ORD, 
-    royaltyper ,                                             
-FROM {{ source('pubs', 'TitleAuthor')}}
+stg_sales AS (
+    SELECT
+        {{ dbt_utils.generate_surrogate_key(['ord_num', 'title_id', 'stor_id']) }} AS order_number, 
+        ord_num,
+        ord_date,
+        TO_CHAR(ord_date, 'YYYYMMDD') AS orderdate_key,
+        EXTRACT(YEAR FROM ord_date) AS order_year,
+        title_id,
+        stor_id,
+        qty
+    FROM {{ source('pubs', 'Sales') }}
 )
-
 SELECT 
-    dt.titles_key,
+    t.titles_key,
     a.authors_key,
-    p.publishers_key,
-    dt.title_id,
-    a.author_id,
-    dt.title_title as title,
-    p.publisher_name,
-    dt.published_year,
-    a.author_name,
-    dt.title_ytd_sales,
-    dt.title_royalty,
-    (dt.title_ytd_sales * dt.title_royalty / 100) AS royalty_amount_per_title,
-    t.royaltyper,
-    (dt.title_ytd_sales * t.royaltyper / 100) AS royalty_amount_per_author,
-    FROM stg_TitleAuthors t
-LEFT JOIN dim_titles dt ON t.titles_key = dt.titles_key
-LEFT JOIN dim_authors a ON t.authors_key = a.authors_key
-LEFT JOIN dim_publishers p ON dt.publishers_key = p.publishers_key
-left join dim_date d on dt.published_year= d.YEAR
+    d.DATEKEY AS date_key,
+    s.order_year ,
+    s.qty,
+    t.ytd_sales,
+    t.royalty AS royalty_percentage,
+    round(t.ytd_sales * t.royalty / 100,2) AS total_royalty,
+    ta.royaltyper AS authors_percentage,
+   round(t.ytd_sales * t.royalty / 100 * ta.royaltyper / 100,2) AS royalty_per_author
+FROM 
+    stg_TitleAuthors ta
+LEFT JOIN 
+    stg_titles t ON ta.titles_key = t.titles_key
+LEFT JOIN 
+    stg_authors a ON ta.authors_key = a.authors_key
+LEFT JOIN
+    stg_sales s ON t.title_id = s.title_id
+LEFT JOIN 
+ dim_date d ON s.orderdate_key = d.DATEKEY
