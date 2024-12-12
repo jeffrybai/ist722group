@@ -67,9 +67,9 @@ stg_sales AS (
 SELECT 
     t.titles_key,
     a.authors_key,
-    a.author_name,
     d.DATEKEY AS date_key,
     s.order_year ,
+    s.qty,
     t.ytd_sales,
     t.royalty AS royalty_percentage,
     round(t.ytd_sales * t.royalty / 100,2) AS total_royalty,
