@@ -67,6 +67,7 @@ stg_sales AS (
 SELECT 
     t.titles_key,
     a.authors_key,
+    a.author_name,
     d.DATEKEY AS date_key,
     s.order_year ,
     t.ytd_sales,
