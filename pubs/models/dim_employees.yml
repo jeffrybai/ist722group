@@ -14,3 +14,17 @@ models:
         tests:
           - not_null
           - unique
+      - name: employee_firstname
+        description: The first name of the employee.
+        tests:
+          - not_null
+      - name: employee_middle_initial
+        description: The middle initial letter of an employee's middle name.
+      - name: employee_lastname
+        description: The last name of the employee.
+        tests:
+          - not_null
+      - name: hire_date_key
+        description: The hire date represented as a unique key.
+        tests:
+          - not_null

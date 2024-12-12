@@ -5,20 +5,28 @@ models:
     description: One row represent an employee
     columns:
       - name: assignment_key
-        description: Degenerate dimension of fact table.
+        description: Unique identifier for employee.
         tests:
           - unique
           - not_null
       - name: employee_key
-        description: Degenerate dimension of employee.
+        description: Unique identifier for each employee record.
         tests:
           - unique
           - not_null
       - name: job_key
-        description: Degenerate key for job table.
+        description: Unique identifier for each employee job record.
         tests:
           - not_null
       - name: publisher_key
-        description: Degenerate key for dim_publisher.
+        description: Unique identifier for the publisher.
+        tests:
+          - not_null
+      - name: employee_fullname
+        description: The catenated full name of the employee.
+        tests:
+          - not_null
+      - name: hire_date_key
+        description: The hire date represented as a unique key.
         tests:
           - not_null
