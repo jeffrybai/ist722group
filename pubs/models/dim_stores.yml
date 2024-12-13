@@ -10,7 +10,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: store_id
+      - name: stor_id
         description: Primary Key of the source system
         tests:
           - not_null
