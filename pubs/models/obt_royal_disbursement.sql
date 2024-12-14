@@ -13,7 +13,6 @@ SELECT
     d_title.*, 
     d_author.*, 
     f.order_year, 
-    f.qty,
     f.royalty_percentage,
     f.total_royalty,
     f.authors_percentage,

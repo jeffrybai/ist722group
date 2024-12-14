@@ -69,12 +69,11 @@ SELECT
     a.authors_key,
     d.DATEKEY AS date_key,
     s.order_year ,
-    s.qty,
     t.ytd_sales,
     t.royalty AS royalty_percentage,
     round(t.ytd_sales * t.royalty / 100,2) AS total_royalty,
     ta.royaltyper AS authors_percentage,
-   round(t.ytd_sales * t.royalty / 100 * ta.royaltyper / 100,2) AS royalty_per_author
+   round(t.ytd_sales* t.royalty / 100 * ta.royaltyper / 100,2) AS royalty_per_author
 FROM 
     stg_TitleAuthors ta
 LEFT JOIN 
