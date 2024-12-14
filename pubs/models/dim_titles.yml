@@ -18,4 +18,13 @@ models:
         description: FK to dim_publisher
         tests:
           - not_null
-      
+      - name: title_title
+        description: title of the book       
+      - name: title_category
+        description: category of the book     
+      - name: title_price
+        description: Price of the book        
+      - name: title_royalty
+        description: Total oyalty percentage based of ytd sales for the title
+      - name: published_year
+        description: Year book was published                     
