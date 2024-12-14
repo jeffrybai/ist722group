@@ -15,7 +15,6 @@ models:
           - not_null
           - unique
       - name: employee_firstname
-<<<<<<< HEAD
         description: First name of the employee
       - name: employee_middle_initial 
         description: Middle initial of the employee's name
@@ -23,18 +22,3 @@ models:
         description: Last name of the employee             
       - name: hire_date_key
         description: hire date of the employee      
-=======
-        description: The first name of the employee.
-        tests:
-          - not_null
-      - name: employee_middle_initial
-        description: The middle initial letter of an employee's middle name.
-      - name: employee_lastname
-        description: The last name of the employee.
-        tests:
-          - not_null
-      - name: hire_date_key
-        description: The hire date represented as a unique key.
-        tests:
-          - not_null
->>>>>>> fe19395a50e7770f4ec11f1ba4dd63506a35d419
