@@ -30,7 +30,7 @@ stg_customer_discount as (
     select
         s.order_number,
         s.stor_id,
-        d.discount as discount_percentage,
+        d.discount as discount_percentage
     from stg_sales s
     left join stg_titles t on s.title_id = t.title_id
     left join {{ source('pubs', 'Discounts') }} as d 
@@ -85,8 +85,6 @@ stg_discounts as (
         from stg_volume_discount
     ) vd on s.order_number = vd.order_number
 )
-
-
 select distinct
     s.order_number,
     t.titles_key,
@@ -99,6 +97,7 @@ select distinct
     p.pub_id,
     st.stor_id,
     t.title as title_title,
+    t.type as title_category,
     t.price as title_price,
     s.qty as quantity,
     round((s.qty * t.price),2) as extended_price_amount,
@@ -114,14 +113,28 @@ select distinct
         ) then 'Initial Customer Discount' 
         else 'No Initial Customer Discount' 
         end as initial_order_discount,
-    coalesce(d.discount, 0) 
+    1 as orders,
+    case 
+        when store_discounttype = 'Customer Discount' then 1 else 0 end as customer_discount,
+    case 
+        when high_volume_discount = 'Volume Discount' then 1 else 0 end as volume_discount,
+    case 
+        when initial_order_discount = 'Initial Customer Discount' then 1 else 0 end as initial_customer_discount,
+        coalesce(d.discount, 0) 
         + case when s.qty >= 50 then 6.7 else 0 end
         + case when not exists (
             select 1 
             from stg_sales s2
             where s2.stor_id = s.stor_id
               and s2.ord_date < s.ord_date
-          ) then 10.5 else 0 end as total_discount_percentage,    
+          ) then 10.5 else 0 end as total_discount_percentage,
+    case 
+        when customer_discount = 1 then round((d.discount/100) * extended_price_amount,2) else 0 end as customer_discount_amount,
+    case 
+        when volume_discount = 1 then round((6.7/100) * extended_price_amount,2) else 0 end as volume_discount_amount,
+    case
+        when initial_customer_discount = 1 then round((10.5/100) * extended_price_amount,2) else 0 end as initial_customer_discount_amount,    
+
     round((s.qty * t.price) * (coalesce(d.discount, 0) 
         + case when s.qty >= 50 then 6.7 else 0 end 
         + case when not exists (
@@ -129,22 +142,9 @@ select distinct
             from stg_sales s2
             where s2.stor_id = s.stor_id
               and s2.ord_date < s.ord_date
-          ) then 10.5 else 0 end) / 100, 2) as total_discount_amount,
+          ) then 10.5 else 0 end) / 100, 2) as total_discount_amount,  
     (extended_price_amount)-(total_discount_amount) as net_sales_amount,      
-    round((net_sales_amount * t.royalty/100),2) as total_royalty_amount,
-    1 as orders,
-    case 
-        when store_discounttype = 'Customer Discount' then 1 else 0 end as customer_discount,
-    case 
-        when store_discounttype = 'No Customer Discount' then 1 else 0 end as no_customer_discount,
-    case 
-        when high_volume_discount = 'Volume Discount' then 1 else 0 end as volume_discount,
-    case 
-        when high_volume_discount = 'No Volume Discount' then 1 else 0 end as no_volume_discount,
-    case 
-        when initial_order_discount = 'Initial Customer Discount' then 1 else 0 end as initial_customer_discount,
-    case 
-        when initial_order_discount = 'No Initial Customer Discount' then 1 else 0 end as no_initial_customer_discount
+    round((net_sales_amount * t.royalty/100),2) as total_royalty_amount
 from stg_sales as s 
 join stg_titles as t on s.title_id = t.title_id
 join stg_publishers as p on t.pub_id  = p.pub_id

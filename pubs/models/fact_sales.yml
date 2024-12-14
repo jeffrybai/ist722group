@@ -38,7 +38,9 @@ models:
       - name: stor_id
         description: store id (degenerate dimension)
       - name: title_title
-        description: title of the book ordered
+        description: book title
+      - name: title_category
+        description: book category
       - name: title_price
         data_type: money
         description: price per book (degenerate dimension)
@@ -66,22 +68,7 @@ models:
           - not_null
       - name: total_discount_percentage
         data_type: decimal
-        tests:
-          - not_null
         description: additive fact of all qualified discount percentages per order
-      - name: total_discount_amount
-        data_type: money
-        description: additive fact for extended_price_amount * discount_percentage/100
-        tests:
-          - not_null
-      - name: net_sales_amount
-        data_type: money
-        description: additive extended price- discount amount
-        tests: 
-          - not_null
-      - name: total_royalty_amount
-        data_type: money
-        description: royalty/100
       - name: orders
         data_type: int
         description: additive fact for order of books
@@ -91,29 +78,47 @@ models:
         data_type: int
         description: Boolean Order qualify for customer discount 1 yes 0 no
         tests:
-          - not_null
-      - name: no_customer_discount
-        data_type: int
-        description: Boolean Order does not qualify for customer discount 1 yes 0 no
-        tests:
-         - not_null
+          - not_null 
       - name: volume_discount
         data_type: int
         description: Boolean Order qualify for volume discount 1 yes 0 no
         tests:
           - not_null
-      - name: no_volume_discount
-        data_type: int
-        description: Boolean Order does not qualify for customer discount 1 yes 0 no
-        tests:
-         - not_null
       - name: initial_customer_discount
         data_type: int
         description: Boolean Order qualify for initial customer discount 1 yes 0 no
         tests:
           - not_null
-      - name: no_initial_customer_discount
-        data_type: int
-        description: Boolean Order does not qualify for initial customer discount 1 yes 0 no
+      - name: total_discount_percentage
+        data_type: decimal
+        description: additive fact of all qualified discount percentages per oder
         tests:
-         - not_null
+          - not_null
+      - name: customer_discount_amount
+        data_type: money
+        description: fact (d.discount/100) * extended_price_amount
+        tests:
+          - not_null
+      - name: volume_discount_amount
+        data_type: money
+        description: fact (volume discount/100) * extended_price_amount
+        tests:
+          - not_null
+      - name: initial_customer_discount_amount
+        data_type: money
+        description: fact (initial customer discount/100) * extended_price_amount
+        tests:
+          - not_null
+      - name: total_discount_amount
+        data_type: money
+        description: additive fact all discount amounts per order
+        tests:
+          - not_null
+      - name: net_sales_amount
+        data_type: money
+        description: fact extended price- discount amount
+        tests: 
+          - not_null
+      - name: total_royalty_amount
+        data_type: money
+        description: royalty/100
