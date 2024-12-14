@@ -21,4 +21,8 @@ models:
       - name: employee_lastname
         description: Last name of the employee             
       - name: hire_date_key
+<<<<<<< HEAD
         description: hire date of the employee      
+=======
+        description: hire date of the employee      
+>>>>>>> 94ff1c127f16ec734a0d846514e1bb99942a83df
