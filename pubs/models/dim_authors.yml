@@ -14,7 +14,13 @@ models:
         tests:
           - not_null
           - unique
-
-   
-
-
+      - name: author_phone
+        description: The phone number of the author.
+      - name: author_address
+        description: The address of the author
+      - name: author_city
+        description: The city of the author
+      - name: author_state
+        description: The state of the author
+      - name: author_zip
+        description: The zipcode of the author

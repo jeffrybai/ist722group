@@ -14,3 +14,11 @@ models:
         tests:
           - not_null
           - unique
+      - name: publisher_name
+        description: Name of the publisher      
+      - name: publisher_city
+        description: Name of the publisher's city        
+      - name: publisher_state
+        description: Name of the publisher's state  
+      - name: publisher_country
+        description: Name of the publisher's country               

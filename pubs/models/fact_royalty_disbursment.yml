@@ -8,7 +8,7 @@ models:
         description: Dimension key for dim_title
       - name: authors_key
         description: Dimension key for dim_authors
-      - name: DATEKEY
+      - name: Date_key
         description: Dimension key for dim_date
       - name: order_year
         description: year for the ytd sales 
@@ -16,11 +16,11 @@ models:
         description: quantity sold 
       - name: ytd_sales
         description: Total year to date sales
-      - name: royalty
+      - name: royalty_percentage
         description: Percentage of royalty rate per title based on ytd sales
-      - name: total royalty amount
+      - name: total royalty 
         description: Additive fact for total royalty amount per title calculated as as ytd_sales * total royalty / 100
-      - name: royaltyper
+      - name: authors_percenrage
         description: Percentage of royalty rate per author
-      - name: royalty_amount_per_author
+      - name: royalty_per_author
         description: Additive fact for total royalty amount per author calculated as ytd_sales * total royalty / 100 * authors percentage / 100) AS royalty_per_author
